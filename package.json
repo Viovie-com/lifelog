@@ -1,0 +1,23 @@
+{
+  "private": true,
+  "scripts": {
+    "build": "node_modules/webpack/bin/webpack.js --progress --hide-modules --config=webpack.config.js",
+    "watch": "npm run build -- --watch"
+  },
+  "dependencies": {
+    "vue": "^2.6.11",
+    "vuetify": "^2.2.15"
+  },
+  "devDependencies": {
+    "@mdi/font": "^4.9.95",
+    "axios": "^0.19",
+    "css-loader": "^3.5.3",
+    "deepmerge": "^4.2.2",
+    "fibers": "^5.0.0",
+    "sass": "^1.26.5",
+    "sass-loader": "^8.0.2",
+    "vue-style-loader": "^4.1.2",
+    "webpack": "^4.43.0",
+    "webpack-cli": "^3.3.11"
+  }
+}

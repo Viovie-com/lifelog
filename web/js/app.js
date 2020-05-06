@@ -1,10 +1,12 @@
 import Vue from 'vue'
 import Vuetify from 'vuetify'
+import App from './App.vue'
 
 Vue.use(Vuetify);
 
-const app = new Vue({
+new Vue({
     el: '#app',
     vuetify: new Vuetify({
     }),
+    render: h => h(App)
 });

@@ -17,4 +17,14 @@ func registerRoutes(router *gin.Engine) {
 	router.Static("images", "web/public/images")
 
 	router.GET("/", controllers.GetIndex)
+
+	// Api group
+	api := router.Group("/api/v1")
+
+	// Member api
+	memberApi := api.Group("/member")
+	{
+		memberApi.POST("/", controllers.RegisterMember)
+		memberApi.PUT("/:id", controllers.UpdateMember)
+	}
 }

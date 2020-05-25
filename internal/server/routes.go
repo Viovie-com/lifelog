@@ -7,16 +7,14 @@ import (
 )
 
 func registerRoutes(router *gin.Engine) {
-	// TODO: change path
-	basePath := "src/lifelog/"
 
 	// Set template
-	router.LoadHTMLGlob(basePath + "web/template/*")
+	router.LoadHTMLGlob("web/template/*")
 
 	// Set asserts
-	router.Static("js", basePath + "web/public/js")
-	router.Static("css", basePath + "web/public/css")
-	router.Static("images", basePath + "web/public/images")
+	router.Static("js", "web/public/js")
+	router.Static("css", "web/public/css")
+	router.Static("images", "web/public/images")
 
 	router.GET("/", controllers.GetIndex)
 }

@@ -9,11 +9,31 @@ import (
 	"github.com/Viovie-com/lifelog/internal/db"
 )
 
+type registerRequest struct {
+	Name     string  `json:"name" binding:"required"`
+	Email    string `json:"email" binding:"required"`
+	Avatar   *string `json:"avatar"`
+	Password string  `json:"password" binding:"required"`
+}
+
 func RegisterMember(c *gin.Context) {
-	var member db.Member
-	if err := c.ShouldBindJSON(&member); err != nil {
+	var request registerRequest
+	if err := c.ShouldBindJSON(&request); err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		return
+	}
+
+	auth := db.MemberAuth{
+		Source:      db.AuthEmail.String(),
+		SourceID:    request.Email,
+		SourceToken: db.Encrypt(request.Password),
+	}
+
+	member := db.Member{
+		Name:   request.Name,
+		Email:  &request.Email,
+		Avatar: request.Avatar,
+		Auth:   &auth,
 	}
 
 	member.Register()

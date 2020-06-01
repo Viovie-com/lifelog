@@ -3,6 +3,9 @@ package db
 import (
 	"crypto/sha256"
 	"encoding/hex"
+	"fmt"
+	"strconv"
+	"time"
 
 	"github.com/jinzhu/gorm"
 )
@@ -33,11 +36,13 @@ func (Member) TableName() string {
 
 type MemberAuth struct {
 	Model
-	MemberID    uint   `gorm:"column:member_id"`
-	Source      string `gorm:"column:source"`
-	SourceID    string `gorm:"column:source_id"`
-	SourceToken string `gorm:"column:source_token"`
-	Token       string `gorm:"column:token"`
+	MemberID     uint      `gorm:"column:member_id"`
+	Source       string    `gorm:"column:source"`
+	SourceID     string    `gorm:"column:source_id"`
+	SourceToken  string    `gorm:"column:source_token"`
+	Token        string    `gorm:"column:token"`
+	RefreshToken string    `gorm:"column:refresh_token"`
+	ExpiredAt    time.Time `gorm:"expired_at"`
 }
 
 func (MemberAuth) TableName() string {
@@ -83,4 +88,31 @@ func Encrypt(password string) (token string) {
 	h.Write([]byte(password))
 	token = hex.EncodeToString(h.Sum(nil))
 	return
+}
+
+func Login(email string, password string) (auth MemberAuth, err error) {
+	db := Instance()
+	defer db.Close()
+
+	password = Encrypt(password)
+
+	db = db.Where(&MemberAuth{Source: AuthEmail.String(), SourceID: email, SourceToken: password}).First(&auth)
+	if err = db.Error; err != nil {
+		fmt.Println(err)
+		return
+	}
+
+	auth.Create()
+	return
+}
+
+func (auth *MemberAuth) Create() {
+	auth.ExpiredAt = time.Now().AddDate(0, 0, 15)
+	auth.Token = Encrypt(auth.SourceID + strconv.FormatInt(auth.ExpiredAt.Unix(), 10))
+	auth.RefreshToken = Encrypt(strconv.FormatUint(uint64(auth.ID), 10) + auth.SourceID + strconv.FormatInt(auth.ExpiredAt.Unix(), 10))
+
+	db := Instance()
+	defer db.Close()
+
+	db.Save(auth)
 }

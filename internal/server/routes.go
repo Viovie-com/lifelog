@@ -4,6 +4,7 @@ import (
 	"github.com/gin-gonic/gin"
 
 	"github.com/Viovie-com/lifelog/internal/controllers"
+	controllerApi "github.com/Viovie-com/lifelog/internal/controllers/api"
 )
 
 func registerRoutes(router *gin.Engine) {
@@ -24,12 +25,12 @@ func registerRoutes(router *gin.Engine) {
 	// Member api
 	memberApi := api.Group("/member")
 	{
-		memberApi.POST("/", controllers.RegisterMember)
-		memberApi.PUT("/:id", controllers.UpdateMember)
+		memberApi.POST("/", controllerApi.RegisterMember)
+		memberApi.PUT("/:id", controllerApi.UpdateMember)
 	}
 
 	authApi := api.Group("/auth")
 	{
-		authApi.POST("/", controllers.Login)
+		authApi.POST("/", controllerApi.Login)
 	}
 }

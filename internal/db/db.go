@@ -34,5 +34,6 @@ func Instance() (db *gorm.DB) {
 	if err != nil {
 		panic("Db connection failed:" + err.Error())
 	}
+	db.LogMode(true)
 	return
 }

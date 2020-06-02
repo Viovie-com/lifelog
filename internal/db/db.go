@@ -32,7 +32,7 @@ func init() {
 func Instance() (db *gorm.DB) {
 	db, err := gorm.Open("mysql", dsn)
 	if err != nil {
-		fmt.Println("Db connection failed: ", err)
+		panic("Db connection failed:" + err.Error())
 	}
 	return
 }

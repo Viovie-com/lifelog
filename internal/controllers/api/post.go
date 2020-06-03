@@ -1,12 +1,12 @@
 package api
 
 import (
-	"errors"
 	"net/http"
 
 	"github.com/gin-gonic/gin"
 
 	"github.com/Viovie-com/lifelog/internal/db"
+	"github.com/Viovie-com/lifelog/internal/middlewares"
 )
 
 type addPostRequest struct {
@@ -18,28 +18,24 @@ type addPostRequest struct {
 }
 
 func AddPost(c *gin.Context) {
-	var request addPostRequest
-	m, hasAuth := c.Get("member")
-	if err := c.ShouldBindJSON(&request); err != nil || !hasAuth {
-		if !hasAuth {
-			err = errors.New("access is denied (5)")
-		}
+	member, err := middlewares.GetMemberFromAuth(c)
+	if err != nil {
 		c.AbortWithError(http.StatusBadRequest, err)
 		return
 	}
-	member, ok := m.(db.Member)
-	if !ok {
-		err := errors.New("access is denied (6)")
+
+	var request addPostRequest
+	if err := c.ShouldBindJSON(&request); err != nil {
 		c.AbortWithError(http.StatusBadRequest, err)
 		return
 	}
 
 	post := db.Post{
-		MemberID: member.ID,
-		Title: request.Title,
-		Content: request.Content,
+		MemberID:   member.ID,
+		Title:      request.Title,
+		Content:    request.Content,
 		CategoryID: request.CategoryID,
-		Draft: request.Draft,
+		Draft:      request.Draft,
 	}
 
 	for _, name := range request.Tags {

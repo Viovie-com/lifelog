@@ -40,3 +40,17 @@ func Auth() gin.HandlerFunc {
 		return
 	}
 }
+
+func GetMemberFromAuth(c *gin.Context) (member db.Member, err error) {
+	m, hasAuth := c.Get("member")
+	if !hasAuth {
+		err = errors.New("access is denied (5)")
+		return
+	}
+	member, ok := m.(db.Member)
+	if !ok {
+		err = errors.New("access is denied (6)")
+		return
+	}
+	return
+}

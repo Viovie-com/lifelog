@@ -24,10 +24,10 @@ func (source AuthSource) String() string {
 
 type Member struct {
 	gorm.Model
-	Name   string      `gorm:"column:name" json:"name" binding:"required"`
-	Email  *string     `gorm:"column:email" json:"email"`
-	Avatar *string     `gorm:"column:avatar" json:"avatar"`
-	Auth   *MemberAuth `gorm:"-"`
+	Name   string  `gorm:"column:name"`
+	Email  *string `gorm:"column:email"`
+	Avatar *string `gorm:"column:avatar"`
+	Auth   *MemberAuth
 }
 
 func (Member) TableName() string {
@@ -75,11 +75,11 @@ func (member *Member) Update() {
 	db.Save(member)
 }
 
-func GetMember(id uint) (member Member) {
+func GetMember(id uint) (member Member, err error) {
 	db := Instance()
 	defer db.Close()
 
-	db.Where(id).First(&member)
+	err = db.Where(id).First(&member).Error
 	return
 }
 

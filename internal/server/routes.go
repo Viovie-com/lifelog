@@ -27,7 +27,7 @@ func registerRoutes(router *gin.Engine) {
 	memberApi := api.Group("/member")
 	{
 		memberApi.POST("/", controllerApi.RegisterMember)
-		memberApi.PUT("/:id", controllerApi.UpdateMember)
+		memberApi.Use(middlewares.Auth()).PUT("/", controllerApi.UpdateMember)
 	}
 
 	// Auth api

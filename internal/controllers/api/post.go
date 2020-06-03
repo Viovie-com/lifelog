@@ -1,6 +1,7 @@
 package api
 
 import (
+	"errors"
 	"net/http"
 
 	"github.com/gin-gonic/gin"
@@ -9,7 +10,6 @@ import (
 )
 
 type addPostRequest struct {
-	MemberID   uint     `json:"memberId" binding:"required"`
 	Title      string   `json:"title" binding:"required"`
 	Content    string   `json:"content" binding:"required"`
 	CategoryID int      `json:"categoryId" binding:"required"`
@@ -19,13 +19,23 @@ type addPostRequest struct {
 
 func AddPost(c *gin.Context) {
 	var request addPostRequest
-	if err := c.ShouldBindJSON(&request); err != nil {
-		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+	m, hasAuth := c.Get("member")
+	if err := c.ShouldBindJSON(&request); err != nil || !hasAuth {
+		if !hasAuth {
+			err = errors.New("access is denied (5)")
+		}
+		c.AbortWithError(http.StatusBadRequest, err)
+		return
+	}
+	member, ok := m.(db.Member)
+	if !ok {
+		err := errors.New("access is denied (6)")
+		c.AbortWithError(http.StatusBadRequest, err)
 		return
 	}
 
 	post := db.Post{
-		MemberID: request.MemberID,
+		MemberID: member.ID,
 		Title: request.Title,
 		Content: request.Content,
 		CategoryID: request.CategoryID,

@@ -83,6 +83,19 @@ func GetMember(id uint) (member Member) {
 	return
 }
 
+func GetMemberByToken(token string) (member Member, err error) {
+	db := Instance()
+	defer db.Close()
+
+	var memberAuth MemberAuth
+	err = db.Where(MemberAuth{Token: token}).First(&memberAuth).Error
+	if err != nil {
+		return
+	}
+	err = db.Where(memberAuth.MemberID).First(&member).Error
+	return
+}
+
 func Encrypt(password string) (token string) {
 	h := sha256.New()
 	h.Write([]byte(password))

@@ -5,6 +5,7 @@ import (
 
 	"github.com/Viovie-com/lifelog/internal/controllers"
 	controllerApi "github.com/Viovie-com/lifelog/internal/controllers/api"
+	"github.com/Viovie-com/lifelog/internal/middlewares"
 )
 
 func registerRoutes(router *gin.Engine) {
@@ -36,7 +37,7 @@ func registerRoutes(router *gin.Engine) {
 	}
 
 	// Post api
-	postApi := api.Group("/post")
+	postApi := api.Group("/post").Use(middlewares.Auth())
 	{
 		postApi.POST("/", controllerApi.AddPost)
 	}

@@ -1,6 +1,7 @@
 package db
 
 import (
+	"database/sql"
 	"fmt"
 	"time"
 
@@ -17,6 +18,8 @@ type Model struct {
 }
 
 var dsn string
+var useMock = false
+var mockDb *sql.DB
 
 func init() {
 	dsn = fmt.Sprintf(
@@ -29,7 +32,19 @@ func init() {
 		internal.Config.DB.Charset)
 }
 
+func SetMockDb(db *sql.DB) {
+	if db != nil {
+		mockDb = db
+		useMock = true
+	}
+}
+
 func Instance() (db *gorm.DB) {
+	if useMock {
+		db, _ = gorm.Open("mysql", mockDb)
+		return
+	}
+
 	db, err := gorm.Open("mysql", dsn)
 	if err != nil {
 		panic("Db connection failed:" + err.Error())

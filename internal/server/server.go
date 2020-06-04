@@ -12,8 +12,7 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
-func Start() {
-
+func SetupRouter() *gin.Engine {
 	router := gin.New()
 
 	// Logger middleware
@@ -24,9 +23,13 @@ func Start() {
 
 	registerRoutes(router)
 
+	return router
+}
+
+func Start() {
 	server := &http.Server{
 		Addr:    "",
-		Handler: router,
+		Handler: SetupRouter(),
 	}
 
 	// Initializing the server in a goroutine so that

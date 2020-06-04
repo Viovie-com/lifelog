@@ -10,8 +10,8 @@ import (
 )
 
 type registerRequest struct {
-	Name     string  `json:"name" binding:"required"`
-	Email    string  `json:"email" binding:"required"`
+	Name     string  `json:"name" binding:"required,max=100"`
+	Email    string  `json:"email" binding:"required,email"`
 	Avatar   *string `json:"avatar"`
 	Password string  `json:"password" binding:"required"`
 }

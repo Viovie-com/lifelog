@@ -65,3 +65,18 @@ func TestApiMemberUpdate(t *testing.T) {
 
 	assert.Equal(t, http.StatusOK, w.Code)
 }
+
+func TestApiAuthLogin(t *testing.T) {
+	sqlDb, mockDb, _ := sqlmock.New()
+	mockDb.ExpectQuery("^SELECT (.*)").WillReturnRows(sqlmock.NewRows([]string{"id"}).AddRow(1))
+	db.SetMockDb(sqlDb)
+
+	router := server.SetupRouter()
+	body := gin.H{
+		"email":    "test@123.c",
+		"password": "123",
+	}
+	w := performApiRequest(router, http.MethodPost, "/auth/", nil, &body)
+
+	assert.Equal(t, http.StatusOK, w.Code)
+}

@@ -12,7 +12,7 @@ import (
 type addPostRequest struct {
 	Title      string   `json:"title" binding:"required"`
 	Content    string   `json:"content" binding:"required"`
-	CategoryID int      `json:"categoryId" binding:"required"`
+	CategoryID int      `json:"categoryId" binding:"required,number"`
 	Draft      bool     `json:"draft" binding:"required"`
 	Tags       []string `json:"tags" binding:"required"`
 }

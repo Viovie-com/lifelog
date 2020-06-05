@@ -80,3 +80,26 @@ func TestApiAuthLogin(t *testing.T) {
 
 	assert.Equal(t, http.StatusOK, w.Code)
 }
+
+func TestApiPostAdd(t *testing.T) {
+	sqlDb, mockDb, _ := sqlmock.New()
+	mockDb.ExpectQuery("^SELECT (.*)").WillReturnRows(sqlmock.NewRows([]string{"id"}).AddRow(1))
+	mockDb.ExpectQuery("^SELECT (.*)").WillReturnRows(sqlmock.NewRows([]string{"id"}).AddRow(1))
+	mockDb.ExpectClose()
+	db.SetMockDb(sqlDb)
+
+	router := server.SetupRouter()
+	headers := map[string]string{
+		"Authorization": "bearer 123",
+	}
+	body := gin.H{
+		"title":      "title",
+		"content":    "test content",
+		"categoryId": 1,
+		"draft":      true,
+		"tags":       []string{"Test", "123"},
+	}
+	w := performApiRequest(router, http.MethodPost, "/post/", &headers, &body)
+
+	assert.Equal(t, http.StatusOK, w.Code)
+}

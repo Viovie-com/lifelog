@@ -27,7 +27,9 @@ func registerRoutes(router *gin.Engine) {
 	memberApi := api.Group("/member")
 	{
 		memberApi.POST("/", controllerApi.RegisterMember)
-		memberApi.Use(middlewares.Auth()).PUT("/", controllerApi.UpdateMember)
+
+		memberApi.Use(middlewares.Auth())
+		memberApi.PUT("/", controllerApi.UpdateMember)
 	}
 
 	// Auth api
@@ -37,8 +39,11 @@ func registerRoutes(router *gin.Engine) {
 	}
 
 	// Post api
-	postApi := api.Group("/post").Use(middlewares.Auth())
+	postApi := api.Group("/post")
 	{
+		postApi.GET("/", controllerApi.GetPosts)
+
+		postApi.Use(middlewares.Auth())
 		postApi.POST("/", controllerApi.AddPost)
 	}
 }

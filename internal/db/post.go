@@ -74,7 +74,7 @@ func GetPosts(page int, limit int) (posts []Post) {
 
 	tagMap := make(map[uint][]PostTag)
 	rows, _ := db.Table("post_tag").Select("post_tag.post_id, tag.id, tag.name").Joins("INNER JOIN tag ON post_tag.tag_id = tag.id").Where("post_tag.post_id IN (?)", postIds).Rows()
-	for rows.Next() {
+	for rows != nil && rows.Next() {
 		var tmp tmpTag
 		db.ScanRows(rows, &tmp)
 		tagMap[tmp.PostID] = append(tagMap[tmp.PostID], PostTag{

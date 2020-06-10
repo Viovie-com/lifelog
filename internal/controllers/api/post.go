@@ -104,5 +104,9 @@ func GetPosts(c *gin.Context) {
 		})
 	}
 
+	if response == nil {
+		response = []postResponse{}
+	}
+
 	c.JSON(http.StatusOK, response)
 }

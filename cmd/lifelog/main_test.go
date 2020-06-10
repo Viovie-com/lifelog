@@ -103,3 +103,14 @@ func TestApiPostAdd(t *testing.T) {
 
 	assert.Equal(t, http.StatusOK, w.Code)
 }
+
+func TestApiPostList(t *testing.T) {
+	sqlDb, _, _ := sqlmock.New()
+	db.SetMockDb(sqlDb)
+
+	router := server.SetupRouter()
+	w := performApiRequest(router, http.MethodGet, "/post/", nil, nil)
+
+	assert.Equal(t, http.StatusOK, w.Code)
+	assert.Equal(t, "[]", w.Body.String())
+}
